@@ -1,12 +1,26 @@
+import json
 from fastapi import FastAPI
-from mangum import Mangum
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+origins = ["http://localhost:3000"]
 
-@app.get("/ping")
-def pong():
-    return {"message": "pong"}
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
-handler = Mangum(app)
+@app.get("/employees")
+def get_employees():
+    with open("data/employees.json") as file:
+        return json.load(file)
+
+
+@app.get("/employees/{employee_id}")
+def get_employee(employee_id: int):
+    return {"employee_id": employee_id}

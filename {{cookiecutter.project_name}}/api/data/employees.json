@@ -1,0 +1,70 @@
+{
+  "employees": [
+    {
+      "uid": "d6c039d9-bf27-4735-be62-8187b3211718",
+      "first_name": "leslie",
+      "last_name": "knope",
+      "position": "deputy director"
+    },
+    {
+      "uid": "b051d8ee-0b31-43f4-9a30-795899edd239",
+      "first_name": "ann",
+      "last_name": "perkins",
+      "position": "department of public health"
+    },
+    {
+      "uid": "8ef8e7e1-c22b-4da5-a6da-215b6fb58557",
+      "first_name": "mark",
+      "last_name": "brendanawicz",
+      "position": "city planner"
+    },
+    {
+      "uid": "621e54cc-3535-4a88-a42f-fd5fe24d0d2d",
+      "first_name": "tom",
+      "last_name": "haverford",
+      "position": "administrator"
+    },
+    {
+      "uid": "92be78ad-f4e6-4736-a440-dcc520e5b725",
+      "first_name": "ron",
+      "last_name": "swanson",
+      "position": "director"
+    },
+    {
+      "uid": "e19385ed-c86e-401e-a541-f3c7295d1558",
+      "first_name": "april",
+      "last_name": "ludgate",
+      "position": "intern"
+    },
+    {
+      "uid": "e9ee5692-380f-450f-aa69-c0cfb108f4a3",
+      "first_name": "andy",
+      "last_name": "dwyer",
+      "position": "shoe shiner"
+    },
+    {
+      "uid": "8ebaa88b-4628-4f1f-8876-edb30a5b85aa",
+      "first_name": "ben",
+      "last_name": "wyatt",
+      "position": "state auditor"
+    },
+    {
+      "uid": "049ad152-c102-4326-b3ea-68a61f1dcb79",
+      "first_name": "chris",
+      "last_name": "traeger",
+      "position": "city manager"
+    },
+    {
+      "uid": "919a299e-da20-4348-93e3-2695cd00cc62",
+      "first_name": "jerry",
+      "last_name": "gergich",
+      "position": "mayor"
+    },
+    {
+      "uid": "6a995389-fd77-45fe-b8db-4058dce457a8",
+      "first_name": "donna",
+      "last_name": "meagle",
+      "position": "administrator"
+    }
+  ]
+}

@@ -1,13 +1,13 @@
 import { css } from '@emotion/react'
 
-const items = css`
+const employees = css`
   display: flex;
   height: 100vh;
   background-color: #ffffff;
 `
 
-const item = css`
+const employee = css`
   padding: 5px;
 `
 
-export { items, item }
+export { employees, employee }

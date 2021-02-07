@@ -10,8 +10,8 @@ import {
   Link,
 } from 'react-router-dom'
 
-import Items from './screens/items'
-import Item from './screens/item'
+import Employees from './screens/employees'
+import Employee from './screens/employee'
 import Dashboard from './components/dashboard/dashboard'
 
 const queryClient = new QueryClient()
@@ -29,22 +29,22 @@ function AppRoutes() {
   return (
     <Router>
       <Switch>
-        <Route exact path="/items/:item">
+        <Route exact path="/employee/:employee_id">
           <Dashboard>
-            <Item />
+            <Employee />
           </Dashboard>
         </Route>
-        <Route exact path="/items">
+        <Route exact path="/employees">
           <Dashboard>
-            <Items />
+            <Employees />
           </Dashboard>
         </Route>
         <Route exact path="/">
-          <Redirect to="/items" />
+          <Redirect to="/employees" />
         </Route>
         <Route path="*">
           <Dashboard>
-            <Link to="/configs/github">404 Not Found</Link>
+            <Link to="/employees">404 Not Found</Link>
           </Dashboard>
         </Route>
       </Switch>
