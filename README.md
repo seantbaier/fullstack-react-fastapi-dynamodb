@@ -7,3 +7,7 @@ Full stack, modern web application generator. Using FastAPI, DynamoDB as databas
 ```shell
 cookiecutter https://github.com/seantbaier/fullstack-react-fastapi-dynamodb.git
 ```
+
+## TODO
+
+- [ ] Finish Infrastructure
