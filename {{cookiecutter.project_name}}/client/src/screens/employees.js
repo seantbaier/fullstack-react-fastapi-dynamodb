@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import useEmployees from '../hooks/useEmployees'
 
 // Components
-import Employee from './employee'
+import Table from '../components/table/table'
 
 // Styles
 import * as styles from './styles'
@@ -23,15 +23,12 @@ function Employees(props) {
   }
 
   const { employees } = data.data || {}
+  console.log('employees', employees)
 
   return (
-    <main css={styles.employees}>
-      {isFetching
-        ? 'loading...'
-        : employees.map(employee => (
-            <Employee key={employee.last_name} employee={employee} />
-          ))}
-    </main>
+    <div css={styles.employees}>
+      {isFetching ? 'loading...' : <Table data={employees} />}
+    </div>
   )
 }
 

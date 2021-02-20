@@ -7,7 +7,8 @@ const wrapper = css`
 `
 
 const dashboard = css`
-  padding: 15px;
+  padding: 35px;
+  width: 100%;
 `
 
 export { wrapper, dashboard }

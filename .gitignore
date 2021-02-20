@@ -2,3 +2,4 @@
 .mypy_cache
 .DS_Store
 workspace.code-workspace
+.venv
