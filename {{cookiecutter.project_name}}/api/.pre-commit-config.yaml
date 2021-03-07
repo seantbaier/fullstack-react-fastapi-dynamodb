@@ -1,3 +1,5 @@
+default_language_version:
+  python: python3.8
 repos:
   - repo: local
     hooks:
@@ -5,43 +7,49 @@ repos:
         name: isort
         stages: [commit]
         language: system
-        entry: pipenv run isort
+        entry: isort
+        exclude: ^.env/
         types: [python]
 
       - id: black
         name: black
         stages: [commit]
         language: system
-        entry: pipenv run black
+        entry: black
+        exclude: ^.env/
         types: [python]
 
       - id: flake8
         name: flake8
         stages: [commit]
         language: system
-        entry: pipenv run flake8
+        args: ["--config={{cookiecutter.project_name}}/api/setup.cfg"]
+        entry: flake8
+        exclude: ^.env/
         types: [python]
         exclude: setup.py
 
-      - id: mypy
-        name: mypy
-        stages: [commit]
-        language: system
-        entry: pipenv run mypy
-        types: [python]
-        pass_filenames: false
+      # - id: mypy
+      #   name: mypy
+      #   stages: [commit]
+      #   language: system
+      #   args: ["--config-file={{cookiecutter.project_name}}/api/setup.cfg", "--exclude={{cookiecutter.project_name}}/api/env/"]
+      #   entry: mypy
+      #   exclude: ^.env/
+      #   types: [python]
+      #   pass_filenames: false
 
-      - id: pytest
-        name: pytest
-        stages: [commit]
-        language: system
-        entry: pipenv run pytest
-        types: [python]
+      # - id: pytest
+      #   name: pytest
+      #   stages: [commit]
+      #   language: system
+      #   entry: pytest
+      #   types: [python]
 
-      - id: pytest-cov
-        name: pytest
-        stages: [push]
-        language: system
-        entry: pipenv run pytest --cov --cov-fail-under=100
-        types: [python]
-        pass_filenames: false
+      # - id: pytest-cov
+      #   name: pytest
+      #   stages: [push]
+      #   language: system
+      #   entry: pytest --cov --cov-fail-under=100
+      #   types: [python]
+      #   pass_filenames: false

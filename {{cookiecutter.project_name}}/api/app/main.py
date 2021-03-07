@@ -1,26 +1,22 @@
-import json
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from mangum import Mangum
 
-app = FastAPI()
+from app.api.api_v1.api import router as api_router
+from app.core.config import settings
 
-origins = ["http://localhost:3000"]
+app = FastAPI(title=settings.PROJECT_NAME)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-
-@app.get("/employees")
-def get_employees():
-    with open("data/employees.json") as file:
-        return json.load(file)
+# Set all CORS enabled origins
+if settings.ALLOWED_CORS_ORIGINS:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[str(origin) for origin in settings.ALLOWED_CORS_ORIGINS],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 
-@app.get("/employees/{employee_id}")
-def get_employee(employee_id: int):
-    return {"employee_id": employee_id}
+app.include_router(api_router, prefix=settings.API_V1_STR)
+handler = Mangum(app)
