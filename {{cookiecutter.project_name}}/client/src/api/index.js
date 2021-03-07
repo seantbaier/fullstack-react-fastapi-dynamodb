@@ -1,7 +1,10 @@
 import axios from 'axios'
 import employees from './employees'
 
-const getEndPointUrl = url => [process.env.REACT_APP_API_URL, url].join('/')
+const getEndPointUrl = url =>
+  [process.env.REACT_APP_API_URL, process.env.REACT_APP_API_VERSION, url].join(
+    '/',
+  )
 
 function api(endpoint, { token, headers: customHeaders } = {}) {
   // Add auth credentials to all outgoing API requests.

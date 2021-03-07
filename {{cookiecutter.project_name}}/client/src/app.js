@@ -3,7 +3,7 @@ import { jsx } from '@emotion/react'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import {
-  HashRouter as Router,
+  BrowserRouter as Router,
   Redirect,
   Switch,
   Route,

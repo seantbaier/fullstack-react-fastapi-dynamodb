@@ -11,8 +11,14 @@ import Table from '../components/table/table'
 // Styles
 import * as styles from './styles'
 
+// Constants
+import { SKIP, LIMIT } from '../constants/queryParams'
+
 function Employees(props) {
-  const { status, data, error, isFetching } = useEmployees()
+  const { status, data, error, isFetching } = useEmployees({
+    skip: SKIP,
+    limit: LIMIT,
+  })
 
   if (isFetching) {
     return <span>Loading...</span>
