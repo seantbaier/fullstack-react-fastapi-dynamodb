@@ -1,0 +1,80 @@
+version: 2.1
+orbs:
+  aws-cli: circleci/aws-cli@1.2.0
+  cypress: cypress-io/cypress@1.27.0
+
+references:
+  workspace_root: &workspace_root /tmp/workspace
+  attach_workspace: &attach_workspace
+    attach_workspace:
+      at: *workspace_root
+
+jobs:
+  build:
+    parameters:
+      env_file:
+        type: env_var_name
+    executor: cypress/default
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run:
+          name: Load Environment Variables
+          command: env > .env
+      - run:
+          name: Install Dependencies
+          command: npm install
+      - run:
+          name: Linting
+          command: npm run lint
+      - run:
+          name: Run Unit Tests
+          command: npm run test
+      - run:
+          name: Build
+          command: npx env-cmd -f .env.${<< parameters.env_file >>} craco build
+      - run:
+          name: Run e2e Tests
+          command: npx start-server-and-test 'npm run serve' 3000 'cypress run'
+      - run:
+          name: Persist build assets
+          command: |
+            set -exu
+            mkdir -p /tmp/workspace/
+            mv build /tmp/workspace/
+      - persist_to_workspace: # store the built files into the workspace for other jobs.
+          root: *workspace_root
+          paths:
+            - build
+
+  deploy:
+    executor: aws-cli/default
+    working_directory: ~/repo
+    steps:
+      - *attach_workspace
+      - aws-cli/setup:
+          aws-region: AWS_DEFAULT_REGION
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+      - run:
+          name: Upload to S3
+          command: |
+            aws s3 sync /tmp/workspace/build s3://${ENVIRONMENT}-{{cookiecutter.project_name}}.io/ --delete
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build:
+          context: dev-{{cookiecutter.project_name}}-client
+          env_file: CIRCLE_BRANCH
+          filters:
+            branches:
+              only: development
+      - deploy:
+          context: dev-{{cookiecutter.project_name}}-client
+          requires:
+            - build
+          filters:
+            branches:
+              only: development

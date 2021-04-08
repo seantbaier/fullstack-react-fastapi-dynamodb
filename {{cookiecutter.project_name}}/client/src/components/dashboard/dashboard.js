@@ -2,8 +2,8 @@
 import { jsx } from '@emotion/react'
 import PropTypes from 'prop-types'
 
-import Header from '../../components/header/header'
-import Sidebar from '../../components/sidebar/sidebar'
+import DashboardHeader from '../headers/dashboardHeader/dashboardHeader'
+import Sidebar from '../sidebar/sidebar'
 
 // Styles
 import * as styles from './styles'
@@ -14,7 +14,7 @@ function Dashboard(props) {
     <main css={styles.wrapper}>
       <Sidebar />
       <div css={styles.dashboard}>
-        <Header />
+        <DashboardHeader />
         <div>{children}</div>
       </div>
     </main>

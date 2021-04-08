@@ -1,27 +1,42 @@
-// Primary Font Color
-const primaryFontColor = '#333'
-// Sidebar
+// Base theme styles
+const primaryColor = '#03c2fc'
+const primaryColorDark = '#009ecf'
+
 const sidebarBgColor = '#1d1d1d'
 const sidebarColor = '#adadad'
 const sidebarWidth = 130
 
-// Responsive
-const breakpointXs = '480px'
-const breakpointSm = '576px'
-const breakpointMd = '768px'
-const breakpointLg = '992px'
-const breakpointXl = '1200px'
+const pageMaxWidth = '1100px'
+
+// Media Queries
+const breakpoints = {
+  xs: '480px',
+  sm: '576px',
+  md: '768px',
+  lg: '992px',
+  xl: '1200px',
+}
+
+// Base Colors
+const gray100 = 'rgba(0, 0, 0, .1)'
+const gray200 = 'rgba(0, 0, 0, .2)'
+const gray300 = 'rgba(0, 0, 0, .3)'
+const gray500 = 'rgba(0, 0, 0, .5)'
+const gray = 'rgba(0, 0, 0, 1)'
+const darkGray = '#333333'
 
 export {
-  // Primary Font Color
-  primaryFontColor,
+  primaryColor,
+  primaryColorDark,
   sidebarBgColor,
   sidebarColor,
+  pageMaxWidth,
+  gray100,
+  gray200,
+  gray300,
+  gray500,
+  gray,
+  darkGray,
   sidebarWidth,
-  // Responsive
-  breakpointLg,
-  breakpointMd,
-  breakpointSm,
-  breakpointXl,
-  breakpointXs,
+  breakpoints,
 }

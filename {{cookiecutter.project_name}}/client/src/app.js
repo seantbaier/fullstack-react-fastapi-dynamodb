@@ -1,54 +1,25 @@
 /** @jsx jsx */
+import React from 'react'
 import { jsx } from '@emotion/react'
-import { ReactQueryDevtools } from 'react-query/devtools'
-import { QueryClient, QueryClientProvider } from 'react-query'
-import {
-  BrowserRouter as Router,
-  Redirect,
-  Switch,
-  Route,
-  Link,
-} from 'react-router-dom'
+import { useAuth } from './contexts/auth'
 
-import Employees from './screens/employees'
-import Employee from './screens/employee'
-import Dashboard from './components/dashboard/dashboard'
+// components
+import FullPageSpinner from './components/spinner'
 
-const queryClient = new QueryClient()
+const AuthenticatedApp = React.lazy(() =>
+  import(/* webpackPrefetch: true */ './authenticated-app'),
+)
+const UnauthenticatedApp = React.lazy(() => import('./unauthenticated-app'))
 
 function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <AppRoutes />
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
-  )
-}
+  const { user } = useAuth()
 
-function AppRoutes() {
+  console.log('url', process.env.REACT_APP_CLIENT_URL)
+
   return (
-    <Router>
-      <Switch>
-        <Route exact path="/employee/:employee_id">
-          <Dashboard>
-            <Employee />
-          </Dashboard>
-        </Route>
-        <Route exact path="/employees">
-          <Dashboard>
-            <Employees />
-          </Dashboard>
-        </Route>
-        <Route exact path="/">
-          <Redirect to="/employees" />
-        </Route>
-        <Route path="*">
-          <Dashboard>
-            <Link to="/employees">404 Not Found</Link>
-          </Dashboard>
-        </Route>
-      </Switch>
-    </Router>
+    <React.Suspense fallback={<FullPageSpinner />}>
+      {user ? <AuthenticatedApp /> : <UnauthenticatedApp />}
+    </React.Suspense>
   )
 }
 
