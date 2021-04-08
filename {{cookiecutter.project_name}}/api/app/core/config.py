@@ -29,7 +29,7 @@ class Settings(BaseSettings):
 
     RUNTIME_ENVIRONMENT: str = "development"
     LOG_LEVEL: str = "INFO"
-    PROJECT_NAME: str = "studiosauce-api"
+    PROJECT_NAME: str
     USERS_OPEN_REGISTRATION: bool = True
     DEFAULT_QUERY_LIMIT: int = 25
     DEFAULT_QUERY_SORT: str = "created_at"

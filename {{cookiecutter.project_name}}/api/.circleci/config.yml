@@ -83,23 +83,23 @@ jobs:
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
       - run:
           name: Upload to S3        
-          command: aws s3 cp /tmp/workspace/lambda/function.zip s3://${ENVIRONMENT}-studiosauce-api/v1.0.0/function.zip
+          command: aws s3 cp /tmp/workspace/lambda/function.zip s3://${ENVIRONMENT}-{{cookiecutter.project_name}}}}-api/v1.0.0/function.zip
       - run:        
           name: Deploy new Lambda        
-          command: aws lambda update-function-code --function-name ${ENVIRONMENT}-studiosauce-api --s3-bucket ${ENVIRONMENT}-studiosauce-api --s3-key v1.0.0/function.zip
+          command: aws lambda update-function-code --function-name ${ENVIRONMENT}-{{cookiecutter.project_name}}}}-api --s3-bucket ${ENVIRONMENT}-{{cookiecutter.project_name}}}}-api --s3-key v1.0.0/function.zip
 
     
 workflows:  
   build-test-and-deploy:    
     jobs:
       - test:
-          context: dev-studiosauce-api
+          context: dev-{{cookiecutter.project_name}}}}-api
           filters:
             branches:
               only:
                 - development
       - build:
-          context: dev-studiosauce-api
+          context: dev-{{cookiecutter.project_name}}}}-api
           requires:
             - test
           filters:
@@ -115,7 +115,7 @@ workflows:
               only:
                 - master
       - deploy:
-          context: dev-studiosauce-api
+          context: dev-{{cookiecutter.project_name}}}}-api
           requires:
             - build
           filters:        
