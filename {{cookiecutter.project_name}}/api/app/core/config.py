@@ -1,15 +1,9 @@
-from typing import List, Union
-
+from typing import List, Union, Optional
 from pydantic import AnyHttpUrl, BaseSettings, validator
 
 
 class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
-    SECRET_KEY: str
-    ALGORITHM: str
-    # SECRET_KEY: str = secrets.token_urlsafe(31)
-    # 60 minutes * 24 hours * 8 days = 8 days
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
     # e.g: '["http://localhost", "http://localhost:4200", "http://localhost:3000", \
     # "http://localhost:8080", "http://local.dockertoolbox.tiangolo.com"]'
@@ -24,16 +18,18 @@ class Settings(BaseSettings):
         raise ValueError(v)
 
     # AWS Credentials
-    AWS_SECRET_ACCESS_KEY: str
-    AWS_ACCESS_KEY: str
-    AWS_DEFAULT_REGION: str
+    # dynamodb is added at the beginning of these since
+    # AWS doesnt allow loambda to have reserved keywords in the vars
+    # These will be replaced wit hsuer auth later
+    DYNAMODB_AWS_DEFAULT_REGION: Optional[str] = "us-east-1"
+    DYNAMODB_AWS_SECRET_ACCESS_KEY: Optional[str]
+    DYNAMODB_AWS_ACCESS_KEY_ID: Optional[str]
+    DYNAMODB_AWS_ROLE_ARN: Optional[str]
+    DYNAMODB_LOCAL_URL: Optional[str] = None
 
-    # Database
-    DYNAMODB_URL: str
-    READ_CAPACITY_UNITS: int
-    WRITE_CAPACITY_UNITS: int
-
-    PROJECT_NAME: str
+    RUNTIME_ENVIRONMENT: str = "development"
+    LOG_LEVEL: str = "INFO"
+    PROJECT_NAME: str = "studiosauce-api"
     USERS_OPEN_REGISTRATION: bool = True
     DEFAULT_QUERY_LIMIT: int = 25
     DEFAULT_QUERY_SORT: str = "created_at"

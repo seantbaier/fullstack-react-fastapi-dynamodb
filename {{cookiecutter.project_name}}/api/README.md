@@ -4,7 +4,7 @@
 
 ```shell
 # Install Dependencies
-pipenv install
+pip install -r requirements.txt
 ```
 
 ## Run the application
@@ -16,9 +16,5 @@ uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
 ## Run Tests
 
 ```shell
-pipenv run pytest
-```
-
-```shell
-pipenv run pytest --cov --cov-fail-under=100
+pytest
 ```

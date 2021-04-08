@@ -1,6 +1,7 @@
-from .crud_expense import expense  # noqa: F401
-from .crud_table import table  # noqa: F401
-from .crud_user import user  # noqa: F401
+from .crud_user import user
+from .crud_table import table
+from .crud_project import project
+from .crud_organization import organization
 
 # For a new basic set of CRUD operations you could just do
 

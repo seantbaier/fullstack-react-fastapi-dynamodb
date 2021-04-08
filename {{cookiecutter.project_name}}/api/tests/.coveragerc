@@ -1,5 +1,5 @@
 [run]
-source = {{cookiecutter.project_name}}-api
+source = deadbear-io-api
 
 [report]
 exclude_lines =

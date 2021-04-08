@@ -1,8 +1,10 @@
-from typing import Optional
-
+from typing import Optional, List
 from pydantic import BaseModel
 
 from app.core.config import settings
+
+READ_CAPACITY_UNITS = 10
+WRITE_CAPACITY_UNITS = 10
 
 
 class Key(BaseModel):
@@ -17,11 +19,6 @@ class AttributeDefinition(BaseModel):
 
 class Table(BaseModel):
     TableName: str
-    KeySchema: list
-    AttributeDefinitions: list
-    ProvisionedThroughput: Optional[dict] = dict(
-        {
-            "ReadCapacityUnits": settings.READ_CAPACITY_UNITS,
-            "WriteCapacityUnits": settings.WRITE_CAPACITY_UNITS,
-        }
-    )
+    KeySchema: List[Key]
+    AttributeDefinitions: List[AttributeDefinition]
+    BillingMode: str = "PAY_PER_REQUEST"

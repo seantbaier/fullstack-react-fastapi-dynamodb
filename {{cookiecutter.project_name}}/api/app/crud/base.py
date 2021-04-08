@@ -3,8 +3,9 @@ from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 
-from app.core.config import settings
 from app.db.base_class import Base
+from app.core.config import settings
+
 
 ModelType = TypeVar("ModelType", bound=Base)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
@@ -16,7 +17,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         """
         CRUD object with default methods to Create, Read, Update, Delete (CRUD).
         **Parameters**
-        * `model`: A Pymongo model class
+        * `model`: A DynamoDB model class
         * `schema`: A Pydantic model (schema) class
         """
         self.model = model
@@ -58,14 +59,15 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return docs
 
     def create(self, db, *, obj_in: CreateSchemaType) -> ModelType:
-        obj_in = jsonable_encoder(obj_in)
-        db_obj = self.model(**obj_in)
-        doc_type = self.model.doc_type()
+        # obj_in = jsonable_encoder(obj_in)
+        # db_obj = self.model(**obj_in)
+        # doc_type = self.model.doc_type()
 
-        collection = db.get_collection(doc_type)
-        new_doc = collection.insert(db_obj)
+        # collection = db.get_collection(doc_type)
+        # new_doc = collection.insert(db_obj)
 
-        return new_doc
+        # return new_doc
+        print("crud base")
 
     def update(
         self,

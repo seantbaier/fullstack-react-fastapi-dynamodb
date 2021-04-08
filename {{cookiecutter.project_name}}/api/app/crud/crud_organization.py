@@ -1,52 +1,54 @@
+import boto3
+from boto3.dynamodb.conditions import Key
+from fastapi.encoders import jsonable_encoder
+from fastapi import status
 from typing import List
 from uuid import uuid4
-
 from botocore.exceptions import ClientError
-from fastapi import status
-from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import HTTPException
+from starlette.status import HTTP_404_NOT_FOUND
 
-from app.api.deps import get_db
 from app.crud.base import CRUDBase
-from app.models import Expense
-from app.schemas.expense import ExpenseCreate, ExpenseUpdate
-from app.utils.dynamodb import format_item_response, format_items_response
+from app.models import Organization
+from app.schemas.organization import OrganizationCreate, OrganizationUpdate
+from app.utils.dynamodb import format_items_response, format_item_response
+from app.api.deps import get_db
 
 
-class CRUDExpense(CRUDBase[Expense, ExpenseCreate, ExpenseUpdate]):
-    def get_by_id(self, dynamodb=None, *, expense_id: str) -> Expense:
+class CRUDProject(CRUDBase[Organization, OrganizationCreate, OrganizationUpdate]):
+    def get_by_id(self, dynamodb=None, *, organization_id: str) -> Organization:
         if not dynamodb:
             dynamodb = get_db()
 
         db = dynamodb.get_resource()
-        table = db.Table("expenses")
+        table = db.Table("organization")
 
         try:
-            response = table.get_item(Key={"id": expense_id})
+            response = table.get_item(Key={"id": organization_id})
             return format_item_response(response)
         except Exception as e:
             raise e
 
-    def get_multi(self, dynamodb=None, *, limit: int = 15) -> List[Expense]:
+    def get_multi(self, dynamodb=None, *, limit: int = 15) -> List[Organization]:
         if not dynamodb:
             dynamodb = get_db()
 
         try:
             db = dynamodb.get_resource()
-            table = db.Table("expenses")
+            table = db.Table("organization")
             response = table.scan(Limit=limit)
 
             return format_items_response(response)
         except Exception as e:
             raise e
 
-    def create(self, dynamodb=None, *, obj_in: ExpenseCreate) -> Expense:
+    def create(self, dynamodb=None, *, obj_in: OrganizationCreate) -> Organization:
         if not dynamodb:
             dynamodb = get_db()
 
         db = dynamodb.get_resource()
 
-        table = db.Table("expenses")
+        table = db.Table("organizations")
         obj_in_data = jsonable_encoder(obj_in)
 
         id = str(uuid4())
@@ -59,15 +61,15 @@ class CRUDExpense(CRUDBase[Expense, ExpenseCreate, ExpenseUpdate]):
             if "HTTPStatusCode" in meta_data:
                 if meta_data["HTTPStatusCode"] == 200:
                     expense = table.get_item(Key={"id": id})
-                    return Expense(**expense["Item"])
+                    return Organization(**expense["Item"])
         raise HTTPException(status_code=400, detail="Bad Request")
 
-    def update(self, dynamodb=None, *, obj_in: ExpenseUpdate) -> Expense:
+    def update(self, dynamodb=None, *, obj_in: OrganizationUpdate) -> Organization:
         if not dynamodb:
             dynamodb = get_db()
 
         db = dynamodb.get_resource()
-        table = db.Table("expenses")
+        table = db.Table("organizations")
 
         obj_in_data = jsonable_encoder(obj_in)
         id = obj_in_data["id"]
@@ -79,7 +81,7 @@ class CRUDExpense(CRUDBase[Expense, ExpenseCreate, ExpenseUpdate]):
                 detail=f"Could not find expense={id}",
             )
 
-        if "Item" not in existing_expense:
+        if not "Item" in existing_expense:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Could not find expense={id}",
@@ -110,21 +112,21 @@ class CRUDExpense(CRUDBase[Expense, ExpenseCreate, ExpenseUpdate]):
 
         if self.is_successful(response):
             expense = table.get_item(Key={"id": id})
-            return Expense(**expense["Item"])
+            return Organization(**expense["Item"])
 
         raise HTTPException(status_code=400, detail="Bad Request")
 
-    def delete(self, dynamodb=None, *, expense_id: str) -> None:
+    def delete(self, dynamodb=None, *, organization_id: str) -> None:
         if not dynamodb:
             dynamodb = get_db()
 
         db = dynamodb.get_resource()
-        table = db.Table("expenses")
+        table = db.Table("organizations")
 
         try:
             response = table.delete_item(
                 Key={
-                    "id": expense_id,
+                    "id": organization_id,
                 }
             )
         except ClientError as e:
@@ -142,4 +144,4 @@ class CRUDExpense(CRUDBase[Expense, ExpenseCreate, ExpenseUpdate]):
         return False
 
 
-expense = CRUDExpense(Expense)
+organization = CRUDProject(Organization)

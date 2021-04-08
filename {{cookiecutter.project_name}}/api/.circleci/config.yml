@@ -1,0 +1,124 @@
+version: 2.1
+
+orbs:
+  python: circleci/python@1.3.3
+  aws-cli: circleci/aws-cli@1.2.1
+
+# Yaml References enable us to DRY out our config by sharing variables across multiple jobs.
+# In this case, we are commonly using the "workspaces" feature to share
+# build artifacts and files across jobs. For example, we build and zip our Python
+# persist it to a workspace to be made available when the pushing to S3.
+references:
+  workspace_root: &workspace_root
+    /tmp/workspace
+  attach_workspace: &attach_workspace
+    attach_workspace:
+      at: *workspace_root
+
+jobs:
+  test:
+    docker:
+      - image: python:3.8-buster
+    working_directory: /app
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Install Docker
+          command: |
+            set -x
+            VER="17.03.0-ce"
+            curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
+            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+            mv /tmp/docker/* /usr/bin
+        
+      - run:
+          name: Install Docker Compose
+          command: |
+            set -x
+            curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+            chmod +x /usr/local/bin/docker-compose
+
+      - run:
+          name: Run Tests
+          command: docker-compose -f docker-compose.test.yml up --abort-on-container-exit
+
+
+  build:
+    executor:
+      name: python/default
+      tag: '3.8'
+    steps:
+      - *attach_workspace
+      - checkout # get code from Github
+      - run:
+          name: Package Dependencies
+          command: pip install --target ./package -r requirements.txt
+      - run:
+          name: Create Zipfile archive of Dependencies
+          command: |
+            cd ./package
+            zip -r9 ../function.zip .
+      - run:
+          name: Add App to Zipfile
+          command: zip -g ./function.zip main.py .env -r app
+      - run:
+          name: "Persist Python assets" # Move our Zipped Lambda into our workspace.
+          command: |
+            set -exu
+            mkdir -p /tmp/workspace/lambda
+            mv function.zip /tmp/workspace/lambda/
+      - persist_to_workspace: # store the built files into the workspace for other jobs.
+          root: *workspace_root
+          paths:
+            - lambda
+  
+  deploy: 
+    executor: aws-cli/default  
+    steps:    
+      - *attach_workspace
+      - aws-cli/setup:
+          aws-region: AWS_DEFAULT_REGION
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+      - run:
+          name: Upload to S3        
+          command: aws s3 cp /tmp/workspace/lambda/function.zip s3://${ENVIRONMENT}-studiosauce-api/v1.0.0/function.zip
+      - run:        
+          name: Deploy new Lambda        
+          command: aws lambda update-function-code --function-name ${ENVIRONMENT}-studiosauce-api --s3-bucket ${ENVIRONMENT}-studiosauce-api --s3-key v1.0.0/function.zip
+
+    
+workflows:  
+  build-test-and-deploy:    
+    jobs:
+      - test:
+          context: dev-studiosauce-api
+          filters:
+            branches:
+              only:
+                - development
+      - build:
+          context: dev-studiosauce-api
+          requires:
+            - test
+          filters:
+            branches:
+              only:
+                - development
+      - hold:
+          type: approval
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
+      - deploy:
+          context: dev-studiosauce-api
+          requires:
+            - build
+          filters:        
+            branches:
+              only:
+                - development

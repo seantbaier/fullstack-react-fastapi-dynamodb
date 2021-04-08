@@ -145,5 +145,5 @@ function.zip
 
 .DS_Store
 
-# DynamoDb
+# DynamoDB
 dynamodb
