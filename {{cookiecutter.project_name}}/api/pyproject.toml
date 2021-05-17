@@ -1,0 +1,76 @@
+[tool.poetry]
+name = "app"
+version = "0.1.0"
+description = ""
+authors = ["Sean Baier <sean.t.baier@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+fastapi = {extras = ["all"], version = "^0.65.1"}
+uvicorn = "^0.13.4"
+python-dotenv = "^0.17.1"
+pynamodb = "^5.0.3"
+boto3 = "^1.17.73"
+python-multipart = "^0.0.5"
+mangum = "^0.11.0"
+python-jose = "^3.2.0"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+loguru = "^0.5.3"
+
+[tool.poetry.dev-dependencies]
+black = "^21.5b1"
+isort = "^5.8.0"
+mypy = "^0.812"
+flake8 = "^3.9.2"
+pytest = "^6.2.4"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 90
+target-version = ['py38']
+include = '\.pyi?$'
+exclude = '''
+/(
+  | \.git
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | \.vscode
+)/
+'''
+
+[tool.pytest.ini_options]
+testpaths = "app/tests"
+# filterwarnings = "error"
+addopts = '''
+  --strict-markers
+  --tb=short
+  --cov=app
+  --cov=tests
+  --cov-branch
+  --cov-report=term-missing
+  --cov-report=html
+  --cov-report=xml
+  --no-cov-on-fail
+  --cov-fail-under=0
+'''
+env = ["SECRET_KEY=secret"]
+
+[tool.pytest-watch.ini_options]
+testpaths = "app/tests"
+
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+combine_as_imports = true
+
+[tool.poetry.scripts]
+start = "scripts.start:start"
+"start:docker" = "scripts.start:docker"
+test = "scripts.test:test"
+coverage = "scripts.test:coverage"
+clean = "scripts.utils:clean"

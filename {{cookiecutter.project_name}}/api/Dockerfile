@@ -1,12 +1,21 @@
 FROM python:3.8
 
-RUN mkdir -p /app
-WORKDIR /app
+RUN pip install --no-cache-dir "uvicorn[standard]" gunicorn
 
-COPY . /app
+# Install Poetry
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | POETRY_HOME=/opt/poetry python && \
+  cd /usr/local/bin && \
+  ln -sf /opt/poetry/bin/poetry && \
+  poetry config virtualenvs.create false
 
-RUN pip install -r requirements.txt
+# Copy poetry.lock* in case it doesn't exist in the repo
+COPY ./pyproject.toml ./poetry.lock* /
 
-EXPOSE 8080
+RUN poetry install --no-root
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
+# See dockerignore for which files this is copying
+COPY . .
+
+ENV PYTHONPATH=/app
+
+EXPOSE 80
