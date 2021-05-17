@@ -145,5 +145,5 @@ function.zip
 
 .DS_Store
 
-# DynamoDB
-dynamodb
+# Localstack DynamoDB
+localstack
